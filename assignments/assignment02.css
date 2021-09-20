@@ -1,7 +1,11 @@
-body{
-  background-color: skyblue;
+body {
+  background-color: lightblue;
 }
-
+span{
+  display: inline-block;
+  width: 100px;
+}
+  
 .stripey tr:nth-child(even) {
   background-color: gray;
 }
