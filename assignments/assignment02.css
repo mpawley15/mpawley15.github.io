@@ -1,12 +1,7 @@
-/* --- put your css here --- */ 
 body{
   background-color: skyblue;
 }
 
-
-
-
-/* --- pre-existing css --- */
 .stripey tr:nth-child(even) {
   background-color: gray;
 }
