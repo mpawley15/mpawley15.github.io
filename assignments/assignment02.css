@@ -1,6 +1,5 @@
 body {
   background-color: skyblue;
-
 }
 
 span{
@@ -41,12 +40,12 @@ nav{
 #dog{
     position: absolute;
     left:0px;
-    top: 1925px;
+    top: 1900px;
 }
 #bird{
     position: absolute;
     left: 425px;
-    top: 2225px;
+    top: 2200px;
 
 }
 
