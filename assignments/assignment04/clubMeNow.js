@@ -129,7 +129,7 @@ function resetAllClubDistances() {
 function displayAbout() {
 	// your code here
 	// window.location.href = "clubAbout.html";
-	window.alert("ClubMeNow version 1.0.0");
+	window.location.href = 'https://mpawley15.github.io/assignments/assignment04/clubAbout.html';
 }
 
 // navigate to "Penalty Info" screen
