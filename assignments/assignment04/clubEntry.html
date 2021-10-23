@@ -51,10 +51,17 @@
 	let newClubDistances;
 	
 	function addClub() {
-		clubs.push(newClubName);
         	if (clubs.length >= 14) 
 			window.alert("Warning: you are only allowed to carry 14 clubs in your golf bag in match play competition");
 	}
+	
+	//what user is entering in text box
+	newClubName = document.getElementById("clubName").value;
+	let position = clubs[clubs.length -1][0] + 100;
+	clubs.push([position,"",newClubName, 0, 0, 0, 0, 0, 0, 0]);
+	let tempStr = JSON.stringify(clubs);
+	localStorage.setItem("clubs", str);
+	window.location.href = "clubDistanceList.html";
 	
 	// navigate to club distance LIST screen
     function cancelClub() {
