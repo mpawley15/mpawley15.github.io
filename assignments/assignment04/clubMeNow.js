@@ -92,6 +92,9 @@ function displayClubDistanceEntryForm(c) {
 // replace the current "clubs" array with the previous one
 function undoLastShot() {
         // your code here !
+	clubs = JSON.parse(localStorage.getItem("clubsUndo");
+	str = JSON.stringify(clubs);
+    	localStorage.setItem("clubs", str);
 }
 
 // create a new (default) "clubs" array
