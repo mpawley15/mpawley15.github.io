@@ -95,6 +95,7 @@ function undoLastShot() {
 	clubs = JSON.parse(localStorage.getItem("clubsUndo"));
 	str = JSON.stringify(clubs);
     	localStorage.setItem("clubs", str);
+	window.location.href = "clubDistanceList.html";
 }
 
 // create a new (default) "clubs" array
