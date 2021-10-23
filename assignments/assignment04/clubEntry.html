@@ -56,7 +56,7 @@
 	}
 	
 	//what user is entering in text box
-	newClubName = document.getElementById("clubName").value;
+	let newClubName = document.getElementById("clubName").value;
 	let position = clubs[clubs.length -1][0] + 100;
 	clubs.push([position,"",newClubName, 0, 0, 0, 0, 0, 0, 0]);
 	let tempStr = JSON.stringify(clubs);
