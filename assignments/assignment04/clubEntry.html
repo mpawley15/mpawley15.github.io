@@ -60,7 +60,7 @@
 	let position = clubs[clubs.length -1][0] + 100;
 	clubs.push([position,"",newClubName, 0, 0, 0, 0, 0, 0, 0]);
 	let tempStr = JSON.stringify(clubs);
-	localStorage.setItem("clubs", str);
+	localStorage.setItem("clubs", tempStr);
 	window.location.href = "clubDistanceList.html";
 	
 	// navigate to club distance LIST screen
