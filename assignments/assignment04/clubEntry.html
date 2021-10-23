@@ -47,11 +47,12 @@
 	// retrieve the "clubs" array
 	let clubs = JSON.parse(localStorage.getItem('clubs'));
 	// display the full clubName of the user-chosen club
-	let newClubName ;
+	let newClubName;
 	let newClubDistances;
 	
 	function addClub() {
-		
+		clubs.push(newClubName);
+		clubRow.push(newClubName);
         	if (clubs.length >= 14) 
 			window.alert("Warning: you are only allowed to carry 14 clubs in your golf bag in math play competition");
 	}
