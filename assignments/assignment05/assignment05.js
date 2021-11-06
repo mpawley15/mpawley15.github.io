@@ -78,11 +78,6 @@ var chartData = {
 // code below modified from: 
 // https://www.w3schools.com/js/js_ajax_intro.asp
 
-
-           
-     
-      
-
  function loadContent() {
  let xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
@@ -94,7 +89,6 @@ var chartData = {
       newConfirmedOver1000 = [];
       
 	    for (let c of covidJsObj.Countries) {
-        // if (c.NewConfirmed > 10000)
         if (c.TotalDeaths > 50000) {
           newConfirmedOver1000.push({ 
             "Slug": c.Slug, 
@@ -108,7 +102,7 @@ var chartData = {
         }
         newConfirmedOver1000 =_.orderBy(newConfirmedOver1000,'TotalConfirmedPer100000', 'desc');
       }
- //if(newConfirmedOver1000.x.TotalDeaths >50000)
+	    
       chartData.data.datasets[0].backgroundColor 
         = "rgba(100,100,100,0.4)"; // gray
       chartData.data.datasets[1].backgroundColor 
@@ -145,7 +139,6 @@ var chartData = {
   xhttp.send();
  
 } // end function loadContent() 
-
 
 // data from: https://en.wikipedia.org/wiki/List_of_countries_and_dependencies_by_population
 var populations = {
