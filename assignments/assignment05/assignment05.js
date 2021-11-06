@@ -134,7 +134,7 @@ var chartData = {
           (x) => x.TotalConfirmed/populations[x.Slug]*100000);
       chartData.options.title.text 
         = "Covid 19 Hotspots (" + 
-        dayjs().format("MM-DD-YYYY") + ")" ;
+        dayjs().format("MMMM-DD-YYYY") + ")" ;
       myChart = new Chart(ctx, chartData); 
 
     } // end if
