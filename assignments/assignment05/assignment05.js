@@ -11,6 +11,7 @@ var newConfirmedOver1000;
 // AJAX variable
 var xhttp;
 
+
 // Chart.js variables
 
 // modified from : https://www.sitepoint.com/introduction-chart-js-2-0-six-examples/
@@ -30,6 +31,10 @@ var chartData = {
       label: 'oranges',
       data: [2, 29, 5, 5, 2, 3, 10],
       backgroundColor: "rgba(255,140,0,0.4)"
+    }, {
+      label: 'blueberries',
+      data: [2, 29, 5, 5, 2, 3, 10],
+      backgroundColor: "rgba(0,0,255,0.4)"
     }]
   },
   options: {
@@ -43,10 +48,13 @@ var chartData = {
           // logarithmic scale ignores maxTicksLimit
           maxTicksLimit: 11,
           callback: function(label, index, labels) {
-            return (   label/1000 > 9 
-                    || label/1000 == 1 
-                    || label/1000 == 0.1 
-                    || label/1000 == 0.01) 
+            return (   label/1000 > 99999
+                    || label/1000 == 10000
+                    || label/1000 == 1000
+                    || label/1000 == 100
+                    || label/1000 == 10
+                    || label/1000 == 1
+                    || label/1000 == 0.1) 
               ? label/1000+'k' :  "";
           }
         },
@@ -65,13 +73,18 @@ var chartData = {
 // ---------- loadContent() function ----------
 
 // Note: you can't execute API data dependent code outside the loadContent() function because the code might execute before the AJAX call responds, that is, it might execute before the variable, covidJson, is initialized with data from the API. Example below.
-// console.log(covidJson.Global.NewConfirmed); // error 
+//console.log(covidJson.Global.NewConfirmed); // error 
 
 // code below modified from: 
 // https://www.w3schools.com/js/js_ajax_intro.asp
 
-function loadContent() {
-  xhttp = new XMLHttpRequest();
+
+           
+     
+      
+
+ function loadContent() {
+ let xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 
         && this.status == 200) {
@@ -81,34 +94,47 @@ function loadContent() {
       newConfirmedOver1000 = [];
       
 	    for (let c of covidJsObj.Countries) {
-        if (c.NewConfirmed > 5000) {
+        // if (c.NewConfirmed > 10000)
+        if (c.TotalDeaths > 50000) {
           newConfirmedOver1000.push({ 
             "Slug": c.Slug, 
             "NewConfirmed": c.NewConfirmed, 
-            "NewDeaths": c.NewDeaths
+            "NewDeaths": c.NewDeaths,
+            "TotalConfirmed": c.TotalConfirmed, 
+            "TotalDeaths": c.TotalDeaths,
+            "TotalConfirmedPer100000":c.TotalConfirmed/populations[c.Slug]*100000,
+            "Population": populations[c.slug]
           });
         }
+        newConfirmedOver1000 =_.orderBy(newConfirmedOver1000,'TotalConfirmedPer100000', 'desc');
       }
-      newConfirmedOver1000 = _.orderBy(newConfirmedOver1000, "NewDeaths", "desc");
-
+ //if(newConfirmedOver1000.x.TotalDeaths >50000)
       chartData.data.datasets[0].backgroundColor 
         = "rgba(100,100,100,0.4)"; // gray
       chartData.data.datasets[1].backgroundColor 
         = "rgba(255,0,0,0.4)"; // red
+      chartData.data.datasets[2].backgroundColor 
+        = "rgba(0,0,255,0.4)"; // blue
       chartData.data.datasets[0].label  
-        = 'new cases';
+        = 'Total Cases';
       chartData.data.datasets[1].label  
-        = 'new deaths';
+        = 'Total Deaths';
+      chartData.data.datasets[2].label  
+        = 'Total Cases Per 1000000';
       chartData.data.labels  
         = newConfirmedOver1000.map( (x) => x.Slug );
       chartData.data.datasets[0].data  
         = newConfirmedOver1000.map( 
-          (x) => x.NewConfirmed );
+          (x) => x.TotalConfirmed );
       chartData.data.datasets[1].data  
         = newConfirmedOver1000.map( 
-          (x) => x.NewDeaths );
+          (x) => x.TotalDeaths );
+      chartData.data.datasets[2].data  
+        = newConfirmedOver1000.map( 
+          (x) => x.TotalConfirmed/populations[x.Slug]*100000);
       chartData.options.title.text 
-        = "Covid 19 Hotspots " + dayjs().format("YYYY-MM-DD");
+        = "Covid 19 Hotspots (" + 
+        dayjs().format("MM-DD-YYYY") + ")" ;
       myChart = new Chart(ctx, chartData); 
 
     } // end if
@@ -117,8 +143,9 @@ function loadContent() {
   
   xhttp.open("GET", URL, true);
   xhttp.send();
-  
+ 
 } // end function loadContent() 
+
 
 // data from: https://en.wikipedia.org/wiki/List_of_countries_and_dependencies_by_population
 var populations = {
@@ -222,19 +249,4 @@ var populations = {
 'papua-new-guinea' : 8935000,
 'austria' : 8915382,
 'switzerland' : 8632703,
-}
-
-// step2 
-// new array 
-// loop through all covidJsObj.Countries[i] 
-// push all info i need
-//Use "populations" object to create an array of objects containing Slug, TotalConfirmed, TotalDeaths, Population (which comes from the "populations" object), and TotalConfirmedPer100000 (which is computed using population). 
-var newArray = [] 
-for (let i=0; i<covidJsObj.Countries.length; i++) {
-  newArray.push({
-    "Slug": "\"" + covidJsObj.Countries[i].Slug + "\"",
-    "TotalConfirmed": covidJsObj.Countries[i].TotalConfirmed,
-    "TotalDeaths": covidJsObj.Countries[i].TotalDeaths
-  })
-  
 }
