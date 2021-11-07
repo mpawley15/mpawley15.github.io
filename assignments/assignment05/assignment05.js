@@ -87,13 +87,15 @@ function loadContent() {
         covidJson = this.responseText;
         covidJsObj = JSON.parse(covidJson);
 		 
-        localStorage.setItem("todaysDate", today.valueOf());
         localStorage.setItem("json", covidJson);
         loadData();
+        console.log("if part 1")
       } 
     }; 
-	  xhttp.open("GET", URL, true);
-	  xhttp.send(); 
+    
+		xhttp.open("GET", URL, true);
+		xhttp.send(); 
+    
   }else {
     covidJson = localStorage.getItem("json"); 
     covidJsObj = JSON.parse(covidJson);
@@ -138,7 +140,7 @@ function loadData() {
       chartData.data.labels  
         = newConfirmedOver1000.map( (x) => x.Slug );
 		
-	  
+	   //Gives the gorrect data information to the corresponding bar on the graph 
       chartData.data.datasets[0].data  
         = newConfirmedOver1000.map( 
           (x) => x.TotalConfirmed );
@@ -150,7 +152,7 @@ function loadData() {
           (x) => x.TotalConfirmedPer100000 );
       chartData.options.title.text 
         = "Covid 19 Hotspots As of "  + 
-        dayjs().format("MM-DD-YYYY");
+        dayjs().format("MM-DD-YYYY"); //Formats the date in the title using dayjs
       myChart = new Chart(ctx, chartData); 
   
 } // end createChart()
