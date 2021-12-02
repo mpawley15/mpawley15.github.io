@@ -224,9 +224,8 @@ app.controller("MyController", function($scope) {
 
 function yearlyBalance() {
     var regexPattern = /[^0-9.]/; //pattern to validate form
- 
-if(regexPattern.test($("#loan_amt01").val()) ||
-    regexPattern.test($("#loan_amt02").val()) || regexPattern.test($("#loan_amt03").val()) || regexPattern.test($("#loan_amt04").val()) || 
+ //tests amount and percent entered
+if(regexPattern.test($("#loan_amt01").val()) || regexPattern.test($("#loan_amt02").val()) || regexPattern.test($("#loan_amt03").val()) || regexPattern.test($("#loan_amt04").val()) || 
 	regexPattern.test($("#loan_amt05").val()) || regexPattern.test($("#loan_int01").val()) ){
   
   $("#validationLoans").html("Loans Error: Invalid Value Entered");
@@ -279,15 +278,15 @@ function save() {
 
 //function to retrieve local storage
 function retrieve(){
-  if(localStorage.getItem("loansStorage") != null){
-    loans = JSON.parse(localStorage.getItem("loansStorage"))
-    $("#loan_year01").val(loans[0].loan_year);
+	if(localStorage.getItem("loansStorage") != null){
+		loans = JSON.parse(localStorage.getItem("loansStorage"))
+		$("#loan_year01").val(loans[0].loan_year);
 		$("#loan_int01").val(loans[0].loan_int_rate);
-				
+		
 		for(let i=1 ; i < 6 ; i++){
-      $("#loan_amt0"+i).val((loans[i-1].loan_amount).toFixed(2));
+			$("#loan_amt0"+i).val((loans[i-1].loan_amount).toFixed(2));
 		}
-    yearlyBalance();
+    		yearlyBalance();
   }
 }
 
