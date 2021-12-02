@@ -1,1 +1,310 @@
+<title>College Debt Estimator</title>
 
+		<!-- bootstrap 4 -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+
+		<!-- custom css -->
+		<style>
+			td, th, td input {text-align: right;}
+      #loan_table {background-color: pink;}
+		</style>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+	
+	</head>
+
+	<body>
+
+		<div class="container" ng-app="payments" ng-controller="MyController">
+
+			<form>
+
+				<h1>College Debt Estimator</h1>
+				
+				<br />
+
+				<div class="row">      
+					<div class="col-lg-6">
+						<div class="form-group">
+						
+							<h2 id = "validationLoans"> Loans</h2>
+
+							<table class="table" id="loan_table">
+								<tr>
+									<th>Year</th>
+									<th>Amount</th>
+									<th>Int Rate<a target="_blank" href="https://studentaid.ed.gov/sa/types/loans/interest-rates"><sup>1</sup></a></th>
+									<th>YE Bal</th>
+								</tr>
+								<tr>
+									<td><input type="text" class="form-control" placeholder="2020" id="loan_year01" /></td>
+									<td><input type="text" class="form-control" placeholder="$10,000.00" id="loan_amt01" /></td>
+									<td><input type="text" class="form-control" placeholder="0.0453" id="loan_int01" /></td>
+									<td><span id="loan_bal01">$10,453.00</span></td>
+								</tr>
+								<tr>
+									<td><input type="text" class="form-control" placeholder="2021" id="loan_year02" /></td>
+									<td><input type="text" class="form-control" placeholder="$10,000.00" id="loan_amt02" /></td>
+									<td><input type="text" class="form-control" placeholder="0.0453" id="loan_int02" /></td>
+									<td><span id="loan_bal02">$21,379.52</span></td>
+								</tr>
+								<tr>
+									<td><input type="text" class="form-control" placeholder="2022" id="loan_year03" /></td>
+									<td><input type="text" class="form-control" placeholder="$10,000.00" id="loan_amt03" /></td>
+									<td><input type="text" class="form-control" placeholder="0.0453" id="loan_int03" /></td>
+									<td><span id="loan_bal03">$32,801.01</span></td>
+								</tr>
+								<tr>
+									<td><input type="text" class="form-control" placeholder="2023" id="loan_year04" /></td>
+									<td><input type="text" class="form-control" placeholder="$10,000.00" id="loan_amt04" /></td>
+									<td><input type="text" class="form-control" placeholder="0.0453" id="loan_int04" /></td>
+									<td><span id="loan_bal04">$44,739.90</span></td>
+								</tr>
+								<tr>
+									<td><input type="text" class="form-control" placeholder="2024" id="loan_year05" /></td>
+									<td><input type="text" class="form-control" placeholder="$10,000.00" id="loan_amt05" /></td>
+									<td><input type="text" class="form-control" placeholder="0.0453" id="loan_int05" /></td>
+									<td><span id="loan_bal05">$57,219.62</span></td>
+								</tr>
+								<tr>
+									<td colspan="3">Interest accrued while attending college:</td>
+									<td><span id="loan_int_accrued">$7,219.62</span></td>
+								</tr>
+							</table>
+							<br />
+							<button type="button" class="btn btn-primary" ng-click="processForm();">Re-calculate</button> 
+              <button type="button" class="btn btn-primary" onclick="save();">Save</button>
+              <button type="button" class="btn btn-primary" onclick="retrieve();">Retrieve</button>
+ 
+						</div>
+					</div>
+
+					<div class="col-lg-6">
+						<div class="form-group">
+						
+							<h2>Payments</h2>
+							
+							<table class="table">
+								<tr>
+									<th>Year</th>
+									<th>Payments</th>
+									<th>Int Amt</th>
+									<th>YE Bal</th>
+								</tr>
+								<tr ng-repeat="x in payments">
+									<td>{{x.year}}</td>
+									<td>{{x.payment}}</td>
+									<td>{{x.interestAmount}}</td>
+									<td>{{x.balance}}</td>
+									
+								</tr>
+						
+							</table>
+						</div>
+					</div>
+
+				</div>
+
+			</form>
+
+		</div>
+    
+    <!--- jquery 3.4.1 -->
+		<script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+    <script>
+    var loans = [
+  { loan_year: 2020, loan_amount: 10000.0, loan_int_rate: 0.0453 },
+  { loan_year: 2021, loan_amount: 10000.0, loan_int_rate: 0.0453 },
+  { loan_year: 2022, loan_amount: 10000.0, loan_int_rate: 0.0453 },
+  { loan_year: 2023, loan_amount: 10000.0, loan_int_rate: 0.0453 },
+  { loan_year: 2024, loan_amount: 10000.0, loan_int_rate: 0.0453 },
+];
+
+var totalOwed = 57219.62; //default value for interest accured while attending to use for calculations
+
+// --- function: loadDoc() ---
+
+$(document).ready(function () {
+  // pre-fill defaults for first loan year
+  //updated with jquery
+  var defaultYear = loans[0].loan_year;
+  $("#loan_year0" + 1).val(defaultYear++);
+  var defaultLoanAmount = loans[0].loan_amount;
+  $("#loan_amt0" + 1).val(defaultLoanAmount.toFixed(2));
+  var defaultInterestRate = loans[0].loan_int_rate;
+  $("#loan_int0" + 1).val(defaultInterestRate);
+  var loanWithInterest = loans[0].loan_amount * (1 + loans[0].loan_int_rate);
+  $("#loan_bal0" + 1).val(toComma(loanWithInterest.toFixed(2)));
+
+  // pre-fill defaults for other loan years
+  for (var i = 2; i < 6; i++) {
+    //updated with jquery
+    $("#loan_year0" + i).val(defaultYear++);
+    $("#loan_year0" + i).attr("disabled", "disabled");
+    $("#loan_year0" + i).css({
+      "background-color": "gray",
+      color: "white",
+    });
+
+    $("#loan_amt0" + i).val(defaultLoanAmount.toFixed(2));
+    $("#loan_int0" + i).val(defaultInterestRate);
+    $("#loan_int0" + i).attr("disabled", "disabled");
+    $("#loan_int0" + i).css({
+      "background-color": "gray",
+      color: "white",
+    });
+    loanWithInterest =
+      (loanWithInterest + defaultLoanAmount) * (1 + defaultInterestRate);
+    $("#loan_bal0" + i).val = toComma(loanWithInterest.toFixed(2));
+  } // end: "for" loop
+
+  // all input fields: select contents on fucus
+  //given from corser
+  $("input[type=text]").focus(function () {
+    $(this).select();
+    $(this).css("background-color", "yellow");
+  });
+  $("input[type=text]").blur(function () {
+    $(this).css("background-color", "white");
+  });
+
+  $("#loan_int01").blur(function () {
+    yearlyBalance();
+  });
+
+  $("#loan_amt01").blur(function () {
+    yearlyBalance();
+  });
+
+  // set focus to first year: messes up codepen
+  $("#loan_year01").focus();
+  $("#loan_year01").blur(function () {
+    updateLoansArray();
+  });
+}); // end: function loadDoc()
+
+//implement angular through slides by AngularJS and Regex.pptx
+var app = angular.module("payments", []);
+app.controller("MyController", function ($scope) {
+  $scope.payments = [];
+  $scope.processForm = function () {
+    let interestRate = loans[0].loan_int_rate; // gets interest rate from loans array
+    let periods = 12; // 12 months in year = 12 pay periods
+    let rate = interestRate / 12; // rate divided by the 12 monthly payments
+    let amountTotal = totalOwed; //copy of totalOwed for calculation
+    let numPeriods = periods * 10; // * 10 because we are using a 10 year pay period
+    let monthlyPayment =
+      amountTotal /
+      ((Math.pow(1 + rate, numPeriods) - 1) /
+        (rate * Math.pow(1 + rate, numPeriods))); //formula for loan
+    let paymentPerYear = monthlyPayment * 12; // amount paid
+
+    for (let i = 0; i < 9; i++) {
+      amountTotal = amountTotal - paymentPerYear;
+      let interest = amountTotal * interestRate; //new interest rate
+
+      //store new interest rate and payments to array
+      $scope.payments[i] = {
+        year: loans[4].loan_year + i + 1,
+        payment: "$" + toComma(paymentPerYear.toFixed(2)),
+        interestAmount: "$" + toComma(interest.toFixed(2)),
+        balance:
+          "$" + toComma((amountTotal = amountTotal + interest).toFixed(2)),
+      };
+    } //end for loop
+
+    $scope.payments[9] = {
+      year: loans[4].loan_year + 10,
+      payment: "$" + toComma(amountTotal.toFixed(2)),
+      interestAmount: "$" + 0,
+      balance: "$" + 0,
+    };
+  };
+});
+
+function yearlyBalance() {
+  var regexPattern = /[^0-9.]/; //pattern to validate form
+
+  if (
+    regexPattern.test($("#loan_amt01").val()) ||
+    regexPattern.test($("#loan_amt02").val()) ||
+    regexPattern.test($("#loan_amt03").val()) ||
+    regexPattern.test($("#loan_amt04").val()) ||
+    regexPattern.test($("#loan_amt05").val()) ||
+    regexPattern.test($("#loan_int01").val())
+  ) {
+    $("#validationLoans").html("Loans Error: Invalid Value Entered");
+  } else {
+    $("#validationLoans").html("Loans");
+  }
+
+  //variables to use for calculations
+  let total = 0;
+  totalOwed = 0;
+  let amount = 0;
+  let rate = 0;
+
+  for (let i = 0; i < 5; i++) {
+    amount = loans[i].loan_amount;
+    rate = loans[i].loan_int_rate;
+    total = total + amount;
+    totalOwed = (totalOwed + amount) * (1 + rate);
+    $("#loan_bal0" + (i + 1)).text("$" + toComma(totalOwed.toFixed(2)));
+  }
+  $("#loan_int_accrued").text("$" + toComma((totalOwed - total).toFixed(2)));
+
+  //if new rate is entered
+  loans[0].loan_int_rate = parseFloat($("#loan_int01").val());
+  for (var i = 1; i < 5; i++) {
+    loans[i].loan_int_rate = parseFloat($("#loan_int01").val());
+    $("#loan_int0" + (i + 1)).val(loans[i].loan_int_rate);
+  }
+}
+
+$("input[id*=loan_amt]").blur(function () {
+  let amount = $(this).attr("id"); // amount user enter in the form selected
+  let temp = parseInt(amount.substring(amount.length - 1, amount.length)) - 1; //gets form that we will be using
+  let newAmount = parseFloat($(this).val()); //value entered
+  $(this).val(newAmount.toFixed(2));
+  loans[temp].loan_amount = parseInt(newAmount.toFixed(2)); //new value entered gets update
+  yearlyBalance();
+});
+
+function toComma(value) {
+  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function updateLoansArray() {
+  loans[0].loan_year = parseInt($("#loan_year01").val());
+  for (var i = 1; i < 5; i++) {
+    loans[i].loan_year = loans[0].loan_year + i;
+    $("#loan_year0" + (i + 1)).val(loans[i].loan_year);
+  }
+}
+
+//function to save local storage
+function save() {
+  var JSONloans = JSON.stringify(loans);
+  localStorage.setItem("loansStorage", JSONloans);
+  console.log(JSONloans);
+}
+
+//function to retrieve local storage
+function retrieve() {
+  if (localStorage.getItem("loansStorage") != null) {
+    loans = JSON.parse(localStorage.getItem("loansStorage"));
+    $("#loan_year01").val(loans[0].loan_year);
+    $("#loan_int01").val(loans[0].loan_int_rate);
+
+    for (let i = 1; i < 6; i++) {
+      $("#loan_amt0" + i).val(loans[i - 1].loan_amount.toFixed(2));
+    }
+    yearlyBalance();
+  }
+}
+
+    </script>
+	</body>
+</html>
