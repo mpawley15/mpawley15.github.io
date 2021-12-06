@@ -25,7 +25,7 @@
 				<div class="row">      
 					<div class="col-lg-6">
 						<div class="form-group">
-							//added id to validate input field
+							
 							<h2 id = "validationLoans"> Loans</h2>
 
 							<table class="table" id="loan_table">
@@ -293,6 +293,7 @@ function retrieve(){
 			$("#loan_amt0"+i).val((loans[i-1].loan_amount).toFixed(2));
 		}
     		yearlyBalance();
+		intRate();
   }
 }
 
