@@ -302,13 +302,47 @@ function toComma(value) {
 }
 
 function updateLoansArray() {
-	loans[0].loan_year = parseInt($("#loan_year01").val());
-	for (var i = 1; i < 5; i++) {
-		loans[i].loan_year = loans[0].loan_year + i;
-		$("#loan_year0" + (i + 1)).val(loans[i].loan_year);
-	}
-}
+  //modified regex from https://regie09.github.io/regie092/assignment06.html 
+  // regex tester web site: https://www.regexpal.com/
+  let yearP = /^(19|20)\d{2}$/; //checks for value to start wiht 19 or 20 followed by two digits after
+  let amtP = /^([1-9][0-9]*)+(.[0-9]{1,2})?$/; //checks to see if first two numbers start with 1-9 and 0-9 followed by any numbers after
+  let intP = /^(0|)+(.[0-9]{1,5})?$/; //starts with 0 and follow by any numbers after that do not exceed 5 digits (total) after decimal 
 
+  let valid = true;
+  if(!yearP.test($(`#loan_year01`).val())){
+    valid = false;
+    $(`#loan_year01`).css("background-color", "red");
+  }
+  for (i = 1; i < 6; i++) {
+    if(!amtP.test($(`#loan_amt0${i}`).val())) {
+      valid = false;
+      $(`#loan_amt0${i}`).css("background-color", "red");
+    } 
+  }
+  if(!intP.test($(`#loan_int01`).val())) {
+    valid = false;
+    $(`#loan_int01`).css("background-color", "red");
+  }
+
+  if(valid) {
+    loans[0].loan_year = parseInt($("#loan_year01").val());
+    for(var i=1; i<5; i++) {
+      loans[i].loan_year = loans[0].loan_year + i;
+    }
+    for(i = 1; i<6; i++){
+      let amt = parseFloat($(`#loan_amt0${i}`).val()).toFixed(2);
+      loans[i-1].loan_amount = amt;
+    }
+    let rate = parseFloat($("#loan_int01").val());
+    for(i=0; i<5; i++){
+      loans[i].loan_int_rate = rate;
+    }
+    
+    yearlyBalance();
+    intRate();
+    
+  } // end: if
+} 
     </script>
 	</body>
 </html>
